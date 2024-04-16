@@ -1,4 +1,4 @@
-osu! beatmaps delete tool by lovely_hyahya
+osu! beatmaps delete tool by lovely_hyahya （using OpenAI. (2024). ChatGPT (3.5) [Large language model]. https://chat.openai.com）
 
 -------------------------------------------------------------------------------------
 
