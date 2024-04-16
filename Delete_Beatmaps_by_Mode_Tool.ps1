@@ -1,78 +1,78 @@
-# 获取Songs文件夹路径
+# Get the Songs folder path
 $songsFolder = Join-Path -Path $PSScriptRoot -ChildPath "Songs"
 
-# 检查Songs文件夹是否存在
+# Check if the Songs folder exists
 if (-not (Test-Path -Path $songsFolder -PathType Container)) {
-    Write-Host "Songs文件夹不存在，请确保脚本放在Songs文件夹旁边。"
+    Write-Host "Songs folder does not exist. Please make sure the script is placed next to the Songs folder."
     exit
 }
 
-# 询问用户需要删除的模式
-$modeToDelete = Read-Host "请输入要删除的模式（0、1、2或3）(0 for std,1 for taiko,2 for catch,3 for mania)："
+# Ask the user for the mode to delete (0 for standard, 1 for taiko, 2 for catch, 3 for mania)
+$modeToDelete = Read-Host "Enter the mode to delete (0 for standard, 1 for taiko, 2 for catch, 3 for mania):"
 
-# 验证用户输入的模式是否有效
+# Validate the user input for mode
 if ($modeToDelete -notin "0", "1", "2", "3") {
-    Write-Host "无效的输入。请输入0、1、2或3。"
+    Write-Host "Invalid input. Please enter 0, 1, 2, or 3."
     exit
 }
 
-# 记录已删除的.osu文件和文件夹
+# Record deleted .osu files and folders
 $deletedFiles = @()
 $deletedFolders = @()
 
-# 遍历Songs文件夹内的所有文件夹
+# Iterate through all folders in the Songs folder
 Get-ChildItem -Path $songsFolder -Directory | ForEach-Object {
     $currentFolder = $_.FullName
-    Write-Host "正在处理文件夹：'$currentFolder'"
+    Write-Host "Processing folder: '$currentFolder'"
     
-    # 获取当前文件夹内的所有.osu文件
+    # Get all .osu files in the current folder
     $osuFiles = Get-ChildItem -LiteralPath $currentFolder -Filter "*.osu" -File
     
-    # 遍历每个.osu文件，删除指定模式的文件
+    # Iterate through each .osu file and delete files with the specified mode
     foreach ($file in $osuFiles) {
         $content = Get-Content -LiteralPath $file.FullName -TotalCount 20
         $patternFound = $false
         foreach ($line in $content) {
-            if ($line -match "Mode:\s*$modeToDelete") {
+            if ($line -match "Mode:\s*${modeToDelete}") {  # Updated this line
                 $patternFound = $true
                 break
             }
         }
         if ($patternFound) {
-            Write-Host "检索到符合模式 $modeToDelete 的.osu文件：'$($file.Name)'，其中的Mode值为 $modeToDelete。"
-            Write-Host "正在删除文件：'$($file.FullName)'"
+            Write-Host "Found .osu file with mode ${modeToDelete}: '$($file.Name)'."  # Updated this line
+            Write-Host "Deleting file: '$($file.FullName)'."
             Remove-Item -LiteralPath $file.FullName -Force
             $deletedFiles += $file.FullName
         }
     }
     
-    # 检查删除后当前文件夹是否没有.osu文件，如果是则删除当前文件夹
+    # Check if the current folder is empty after deletion, if so, delete the current folder
     $isEmpty = @(Get-ChildItem -LiteralPath $currentFolder -File -Filter "*.osu").Count -eq 0
     if ($isEmpty) {
-        Write-Host "文件夹 '$currentFolder' 不包含任何.osu文件，将被删除。"
+        Write-Host "Folder '$currentFolder' does not contain any .osu files and will be deleted."
         Remove-Item -LiteralPath $currentFolder -Force -Recurse
         $deletedFolders += $currentFolder
     }
 }
 
-# 显示已删除的文件和文件夹
+# Display deleted files and folders
 if ($deletedFiles.Count -gt 0) {
-    Write-Host "已删除以下带有 Mode:$modeToDelete 的 .osu 文件："
+    Write-Host "Deleted .osu files with Mode:${modeToDelete}:"  # Updated this line
     $deletedFiles | ForEach-Object {
         Write-Host "  $_"
     }
 } else {
-    Write-Host "未找到带有 Mode:$modeToDelete 的 .osu 文件。"
+    Write-Host "No .osu files with Mode:${modeToDelete} found."  # Updated this line
 }
 
 if ($deletedFolders.Count -gt 0) {
-    Write-Host "已删除以下不包含任何.osu文件的文件夹："
+    Write-Host "Deleted folders without any .osu files:"
     $deletedFolders | ForEach-Object {
         Write-Host "  $_"
     }
 } else {
-    Write-Host "未删除任何不包含任何.osu文件的文件夹。"
+    Write-Host "No folders without any .osu files deleted."
 }
 
-Write-Host "操作完成。"
-Read-Host -Prompt "按任意键继续..."
+Write-Host "Operation completed."
+Read-Host -Prompt "Press any key to continue..."
