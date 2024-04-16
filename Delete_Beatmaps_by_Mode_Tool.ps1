@@ -1,34 +1,34 @@
-# »ñÈ¡SongsÎÄ¼ş¼ĞÂ·¾¶
+# è·å–Songsæ–‡ä»¶å¤¹è·¯å¾„
 $songsFolder = Join-Path -Path $PSScriptRoot -ChildPath "Songs"
 
-# ¼ì²éSongsÎÄ¼ş¼ĞÊÇ·ñ´æÔÚ
+# æ£€æŸ¥Songsæ–‡ä»¶å¤¹æ˜¯å¦å­˜åœ¨
 if (-not (Test-Path -Path $songsFolder -PathType Container)) {
-    Write-Host "SongsÎÄ¼ş¼Ğ²»´æÔÚ£¬ÇëÈ·±£½Å±¾·ÅÔÚSongsÎÄ¼ş¼ĞÅÔ±ß¡£"
+    Write-Host "Songsæ–‡ä»¶å¤¹ä¸å­˜åœ¨ï¼Œè¯·ç¡®ä¿è„šæœ¬æ”¾åœ¨Songsæ–‡ä»¶å¤¹æ—è¾¹ã€‚"
     exit
 }
 
-# Ñ¯ÎÊÓÃ»§ĞèÒªÉ¾³ıµÄÄ£Ê½
-$modeToDelete = Read-Host "ÇëÊäÈëÒªÉ¾³ıµÄÄ£Ê½£¨0¡¢1¡¢2»ò3£©£º"
+# è¯¢é—®ç”¨æˆ·éœ€è¦åˆ é™¤çš„æ¨¡å¼
+$modeToDelete = Read-Host "è¯·è¾“å…¥è¦åˆ é™¤çš„æ¨¡å¼ï¼ˆ0ã€1ã€2æˆ–3ï¼‰(0 for std,1 for taiko,2 for catch,3 for mania)ï¼š"
 
-# ÑéÖ¤ÓÃ»§ÊäÈëµÄÄ£Ê½ÊÇ·ñÓĞĞ§
+# éªŒè¯ç”¨æˆ·è¾“å…¥çš„æ¨¡å¼æ˜¯å¦æœ‰æ•ˆ
 if ($modeToDelete -notin "0", "1", "2", "3") {
-    Write-Host "ÎŞĞ§µÄÊäÈë¡£ÇëÊäÈë0¡¢1¡¢2»ò3¡£"
+    Write-Host "æ— æ•ˆçš„è¾“å…¥ã€‚è¯·è¾“å…¥0ã€1ã€2æˆ–3ã€‚"
     exit
 }
 
-# ¼ÇÂ¼ÒÑÉ¾³ıµÄ.osuÎÄ¼şºÍÎÄ¼ş¼Ğ
+# è®°å½•å·²åˆ é™¤çš„.osuæ–‡ä»¶å’Œæ–‡ä»¶å¤¹
 $deletedFiles = @()
 $deletedFolders = @()
 
-# ±éÀúSongsÎÄ¼ş¼ĞÄÚµÄËùÓĞÎÄ¼ş¼Ğ
+# éå†Songsæ–‡ä»¶å¤¹å†…çš„æ‰€æœ‰æ–‡ä»¶å¤¹
 Get-ChildItem -Path $songsFolder -Directory | ForEach-Object {
     $currentFolder = $_.FullName
-    Write-Host "ÕıÔÚ´¦ÀíÎÄ¼ş¼Ğ£º'$currentFolder'"
+    Write-Host "æ­£åœ¨å¤„ç†æ–‡ä»¶å¤¹ï¼š'$currentFolder'"
     
-    # »ñÈ¡µ±Ç°ÎÄ¼ş¼ĞÄÚµÄËùÓĞ.osuÎÄ¼ş
+    # è·å–å½“å‰æ–‡ä»¶å¤¹å†…çš„æ‰€æœ‰.osuæ–‡ä»¶
     $osuFiles = Get-ChildItem -LiteralPath $currentFolder -Filter "*.osu" -File
     
-    # ±éÀúÃ¿¸ö.osuÎÄ¼ş£¬É¾³ıÖ¸¶¨Ä£Ê½µÄÎÄ¼ş
+    # éå†æ¯ä¸ª.osuæ–‡ä»¶ï¼Œåˆ é™¤æŒ‡å®šæ¨¡å¼çš„æ–‡ä»¶
     foreach ($file in $osuFiles) {
         $content = Get-Content -LiteralPath $file.FullName -TotalCount 20
         $patternFound = $false
@@ -39,40 +39,40 @@ Get-ChildItem -Path $songsFolder -Directory | ForEach-Object {
             }
         }
         if ($patternFound) {
-            Write-Host "¼ìË÷µ½·ûºÏÄ£Ê½ $modeToDelete µÄ.osuÎÄ¼ş£º'$($file.Name)'£¬ÆäÖĞµÄModeÖµÎª $modeToDelete¡£"
-            Write-Host "ÕıÔÚÉ¾³ıÎÄ¼ş£º'$($file.FullName)'"
+            Write-Host "æ£€ç´¢åˆ°ç¬¦åˆæ¨¡å¼ $modeToDelete çš„.osuæ–‡ä»¶ï¼š'$($file.Name)'ï¼Œå…¶ä¸­çš„Modeå€¼ä¸º $modeToDeleteã€‚"
+            Write-Host "æ­£åœ¨åˆ é™¤æ–‡ä»¶ï¼š'$($file.FullName)'"
             Remove-Item -LiteralPath $file.FullName -Force
             $deletedFiles += $file.FullName
         }
     }
     
-    # ¼ì²éÉ¾³ıºóµ±Ç°ÎÄ¼ş¼ĞÊÇ·ñÃ»ÓĞ.osuÎÄ¼ş£¬Èç¹ûÊÇÔòÉ¾³ıµ±Ç°ÎÄ¼ş¼Ğ
+    # æ£€æŸ¥åˆ é™¤åå½“å‰æ–‡ä»¶å¤¹æ˜¯å¦æ²¡æœ‰.osuæ–‡ä»¶ï¼Œå¦‚æœæ˜¯åˆ™åˆ é™¤å½“å‰æ–‡ä»¶å¤¹
     $isEmpty = @(Get-ChildItem -LiteralPath $currentFolder -File -Filter "*.osu").Count -eq 0
     if ($isEmpty) {
-        Write-Host "ÎÄ¼ş¼Ğ '$currentFolder' ²»°üº¬ÈÎºÎ.osuÎÄ¼ş£¬½«±»É¾³ı¡£"
+        Write-Host "æ–‡ä»¶å¤¹ '$currentFolder' ä¸åŒ…å«ä»»ä½•.osuæ–‡ä»¶ï¼Œå°†è¢«åˆ é™¤ã€‚"
         Remove-Item -LiteralPath $currentFolder -Force -Recurse
         $deletedFolders += $currentFolder
     }
 }
 
-# ÏÔÊ¾ÒÑÉ¾³ıµÄÎÄ¼şºÍÎÄ¼ş¼Ğ
+# æ˜¾ç¤ºå·²åˆ é™¤çš„æ–‡ä»¶å’Œæ–‡ä»¶å¤¹
 if ($deletedFiles.Count -gt 0) {
-    Write-Host "ÒÑÉ¾³ıÒÔÏÂ´øÓĞ Mode:$modeToDelete µÄ .osu ÎÄ¼ş£º"
+    Write-Host "å·²åˆ é™¤ä»¥ä¸‹å¸¦æœ‰ Mode:$modeToDelete çš„ .osu æ–‡ä»¶ï¼š"
     $deletedFiles | ForEach-Object {
         Write-Host "  $_"
     }
 } else {
-    Write-Host "Î´ÕÒµ½´øÓĞ Mode:$modeToDelete µÄ .osu ÎÄ¼ş¡£"
+    Write-Host "æœªæ‰¾åˆ°å¸¦æœ‰ Mode:$modeToDelete çš„ .osu æ–‡ä»¶ã€‚"
 }
 
 if ($deletedFolders.Count -gt 0) {
-    Write-Host "ÒÑÉ¾³ıÒÔÏÂ²»°üº¬ÈÎºÎ.osuÎÄ¼şµÄÎÄ¼ş¼Ğ£º"
+    Write-Host "å·²åˆ é™¤ä»¥ä¸‹ä¸åŒ…å«ä»»ä½•.osuæ–‡ä»¶çš„æ–‡ä»¶å¤¹ï¼š"
     $deletedFolders | ForEach-Object {
         Write-Host "  $_"
     }
 } else {
-    Write-Host "Î´É¾³ıÈÎºÎ²»°üº¬ÈÎºÎ.osuÎÄ¼şµÄÎÄ¼ş¼Ğ¡£"
+    Write-Host "æœªåˆ é™¤ä»»ä½•ä¸åŒ…å«ä»»ä½•.osuæ–‡ä»¶çš„æ–‡ä»¶å¤¹ã€‚"
 }
 
-Write-Host "²Ù×÷Íê³É¡£"
-Read-Host -Prompt "°´ÈÎÒâ¼ü¼ÌĞø..."
+Write-Host "æ“ä½œå®Œæˆã€‚"
+Read-Host -Prompt "æŒ‰ä»»æ„é”®ç»§ç»­..."
