@@ -8,7 +8,7 @@ osu! beatmaps delete tool by lovely_hyahya （using OpenAI. (2024). ChatGPT (3.5
 
 2：选择 使用 PowerShell 运行
 
-3：输入 0~3 中的任意一个数字 (0 代表 std,1 代表 taiko,2 代表 catch,3 代表mania)
+3：输入 0~3 中的任意一个数字 (0 代表 std，1 代表 taiko，2 代表 catch，3 代表mania)
 
 4：按下回车即可自动删除该模式内的所有谱面（包括音频文件等，如果该谱面集没有其他模式的谱面）
 
